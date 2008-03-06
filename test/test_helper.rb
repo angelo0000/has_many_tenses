@@ -1,17 +1,21 @@
-plugin_test_dir = File.dirname(__FILE__)
-require File.join(plugin_test_dir, '/test_helper')
-
-# Load the Rails environment
-require File.join(plugin_test_dir, '../../../../config/environment')
-require 'active_record/base'
 require 'test/unit'
+require 'active_record'
+require 'has_many_tenses'
+ActiveRecord::Base.send(:include, RailsJitsu::HasManyTenses)
 
-# Load up out database & create our logger
-databases = YAML::load(File.join(plugin_test_dir, '/database.yml'))
-ActiveRecord::Base.logger = Logger.new(plugin_test_dir + "/debug.log")
+ActiveRecord::Base.establish_connection({
+    'adapter' => 'sqlite3',
+    'database' => ':memory:'
+  })
+load(File.join(File.dirname(__FILE__), 'schema.rb'))
 
-# Connect to our plugin test database
-ActiveRecord::Base.establish_connection(databases[ENV['DB'] || 'sqlite3'])
+class Post < ActiveRecord::Base
+  has_many :comments, :extend => RailsJitsu::HasManyTenses::SingletonMethods
+end
 
-# Load the test schema into the database
-load(File.join(plugin_test_dir, 'schema.rb'))
+def create_posts_and_comments_with_date(date)
+  post = Post.new({:body => "post"})
+  post.save
+  5.times{|i| post.comments << Comment.new(:body => i, :created_at => date)}
+  post
+end
