@@ -1,4 +1,4 @@
-require 'test_helper'
+require(File.join(File.dirname(__FILE__), 'test_helper'))
 
 class Comment < ActiveRecord::Base
   belongs_to :post
@@ -26,23 +26,24 @@ class HasManyTensesTest < Test::Unit::TestCase
   end
   
   def test_future_has_many_association_proxy
-    post = create_posts_and_comments_with_date(15.seconds.from_now)
-    assert_equal post.comments.future.size, 5
-    assert_equal post.comments.past.size, 0
-    assert_equal post.comments.recent.size, 0
+    post = create_posts_and_comments_with_date({:created_at => 15.seconds.from_now})
+    assert_equal 5, post.comments.future.size
+    assert_equal 0, post.comments.past.size
+    assert_equal 0, post.comments.recent.size
   end
 
   def test_past_has_many_association_proxy
-    post = create_posts_and_comments_with_date(15.seconds.ago)
-    assert_equal post.comments.future.size, 0
-    assert_equal post.comments.past.size, 5
-    assert_equal post.comments.recent.size, 5
+    post = create_posts_and_comments_with_date({:created_at => 15.minutes.ago})
+    assert_equal 0, post.comments.future.size
+    assert_equal 5, post.comments.past.size
+    assert_equal 5, post.comments.recent.size
   end
 
   def test_past_and_no_recent_has_many_association_proxy
-    post = create_posts_and_comments_with_date(15.days.ago)
-    assert_equal post.comments.future.size, 0
-    assert_equal post.comments.past.size, 5
-    assert_equal post.comments.recent.size, 0
+    post = create_posts_and_comments_with_date({:created_at => 15.days.ago})
+    assert_equal 0, post.comments.future.size
+    assert_equal 5, post.comments.past.size
+    assert_equal 0, post.comments.recent.size
   end
+  
 end
