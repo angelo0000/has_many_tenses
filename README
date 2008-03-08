@@ -1,19 +1,20 @@
 HasManyTenses
 ===================
-Every model in Rails should have a created_at field. This plugin allows you to use that field to get association collections like model.collection.recent, future, past and instance booleans like mode.past? model.future? model.recent?
+HasManyTenses allows you to either use the created_at field on a Model or supply your own :compare_to column name.
+This plugin allows you to use that field to get association collections like model.collection.recent, future, past and instance booleans like mode.past? model.future? model.recent?
 
 Prerequisites
 =============
 Rails 1.2.6+
-Model must have created_at
 
 Installing the plugin
 =====================
   -- Get the plugin:
-    git clone git@github.com:peimei/has_many_tenses.git vendor/plugins/has_many_tenses
+    git clone git://github.com/peimei/has_many_tenses.git vendor/plugins/has_many_tenses
   
   -- To get access to the instance methods just add has_many_tenses to your model
      You can also modify the recency comparer via has_many_tenses(:recency => 30.minutes.ago)
+     You can also modify the compare_to comparer via has_many_tenses(:compare_to => :calendar_event)
       
   -- To use the association proxies do something like:
       has_many :comments, :order => 'created_at ASC', :dependent => :destroy, 
