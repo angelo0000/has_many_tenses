@@ -26,6 +26,7 @@ class HasManyTensesTest < Test::Unit::TestCase
   end
   
   def test_future_has_many_association_proxy
+    c = Comment.new
     post = create_posts_and_comments_with_date({:created_at => 15.seconds.from_now})
     assert_equal 5, post.comments.future.size
     assert_equal 0, post.comments.past.size

@@ -3,20 +3,16 @@ module RailsJitsu
   module HasManyTenses #:nodoc:
 
     def self.included(base)
-      base.cattr_accessor :recency
-      base.cattr_accessor :compare_to
       base.extend ClassMethods
     end
 
     module ClassMethods
       
-      def has_many_tenses(options = {})
-        self.recency = 15.minutes.ago
-        self.compare_to = :created_at
-        if options.is_a?(Hash)
-          self.recency = options[:recency] if options[:recency].class == Time
-          self.compare_to = options[:compare_to] if options[:compare_to]
-        end
+      def has_many_tenses(opts = {})
+        write_inheritable_attribute :recency, opts[:recency] || 15.minutes.ago
+        write_inheritable_attribute :compare_to, opts[:compare_to] || :created_at
+        class_inheritable_reader    :recency
+        class_inheritable_reader    :compare_to
         include RailsJitsu::HasManyTenses::InstanceMethods
       end
     end
